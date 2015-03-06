@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="monitor.manager.url" class="AppBundle\Manager\UrlManager">
+            <argument type="service" id="snc_redis.default"/>
+        </service>
+
+        <service id="monitor.notify.mailer" class="AppBundle\Notify\Mailer">
+            <argument type="service" id="mailer"/>
+            <argument type="service" id="templating"/>
+        </service>
+    </services>
+</container>

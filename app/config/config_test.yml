@@ -14,3 +14,10 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: 'redis://localhost:10000'

@@ -7,13 +7,14 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\EventListener\ErrorEvent;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
 
-class UrlCheckerCommand extends ContainerAwareCommand
+class UrlCheckerCommand extends BaseCommand
 {
 
     protected $log;
@@ -33,52 +34,74 @@ class UrlCheckerCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $this->redis = $this->getContainer()->get('snc_redis.default');
+        /** @var \AppBundle\Manager\UrlManager $urlManager */
+        $urlManager = $this->getContainer()->get('monitor.manager.url');
+
+        $urls = $urlManager->getAllUrls();
+        foreach ($urls as $url) {
+            $this->checkUrl($url, $output);
+        }
+    }
+
+    protected function checkUrl($url, $output)
+    {
 
         $client = new Client(
             array(
-                "base_url" => "http://www.onfan.com/api/v4/"
+                "base_url" => "http://www.onfan.com/"
             )
         );
-        $url = 'specialities/1';
 
-        $request = $client->createRequest('GET', 'specialities/1');
-        $this->log = $this->getContainer()->get('monolog.logger.command');
+        $request = $client->createRequest('GET', $url);
+        $log = $this->getContainer()->get('monolog.logger.command');
+        /** @var \AppBundle\Manager\UrlManager $urlManager */
+        $urlManager = $this->getContainer()->get('monitor.manager.url');
 
         try {
             $response = $client->send($request);
             $code = $response->getStatusCode();
+            $urlManager->setVisited($url, $code);
 
-            //save status somewhere
-            $this->notifySuccess(sprintf('URL %s has status %s', $url, $code), $url);
+            if (substr($code, 0, 1) != 2) {
+               $this->throwEvent();
+            }
+
             $json = $response->json();
-
             //check if has all the expected fields
             $expectedKeys = array('id', 'name');
             foreach ($expectedKeys as $key) {
                 if (!array_key_exists($key, $json)) {
                     $message = sprintf("This key %s doesn't exist in response", $key);
-                    $this->notifyError($message);
+                    $this->notifyError($message, $log, $output);
                 }
             }
 
 
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            $this->log->error('URL not found: ' . $url);
+            $log->error('URL not found: ' . $url);
             $output->writeln($e->getMessage());
+            $urlManager->setVisited($url, 404);
+
+            $this->throwEvent();
+
         }
+    }
 
+    protected function throwEvent()
+    {
+        $event = new ErrorEvent();
+        $dispatcher = $this->getContainer()->get('event_dispatcher');
+        $dispatcher->dispatch('statusNotSuccess', $event);
+    }
+    protected function notifySuccess($message, $url, $log, $output)
+    {
+        $log->info($message);
+        $output->writeln($message);
 
     }
 
-    protected function notifySuccess($message, $url)
+    protected function notifyError($message, $log, $output)
     {
-        $this->redis->sadd($url, time());
-        $this->log->info($message);
-    }
-
-    protected function notifyError($message)
-    {
-        $this->log->error($message);
+        $log->error($message);
     }
 }
