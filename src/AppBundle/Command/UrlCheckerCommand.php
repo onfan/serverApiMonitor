@@ -8,6 +8,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\EventListener\ErrorEvent;
+use AppBundle\EventListener\EventsName;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -89,9 +90,9 @@ class UrlCheckerCommand extends BaseCommand
 
     protected function throwEvent()
     {
-        $event = new ErrorEvent();
+        $event = new Not200Event();
         $dispatcher = $this->getContainer()->get('event_dispatcher');
-        $dispatcher->dispatch('statusNotSuccess', $event);
+        $dispatcher->dispatch(EventsName::STATUS_NOT_200, $event);
     }
     protected function notifySuccess($message, $url, $log, $output)
     {
