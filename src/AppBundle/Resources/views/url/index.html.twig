@@ -1,0 +1,18 @@
+{% extends "::base.html.twig" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+
+            <h1>List Urls</h1>
+
+            <div class="col-md-12">
+                {% for url in urls %}
+
+                {{ url }}
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock %}
+

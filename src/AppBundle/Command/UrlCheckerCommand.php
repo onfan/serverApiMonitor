@@ -9,6 +9,7 @@ namespace AppBundle\Command;
 
 use AppBundle\EventListener\ErrorEvent;
 use AppBundle\EventListener\EventsName;
+use AppBundle\EventListener\Not200Event;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -60,10 +61,10 @@ class UrlCheckerCommand extends BaseCommand
 
         try {
             $response = $client->send($request);
-            $code = $response->getStatusCode();
+            $code = (int)$response->getStatusCode();
             $urlManager->setVisited($url, $code);
 
-            if (substr($code, 0, 1) != 2) {
+            if ($code >= 300) {
                $this->throwEvent();
             }
 
