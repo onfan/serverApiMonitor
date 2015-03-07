@@ -8,7 +8,8 @@
 /bin/
 /composer.phar
 /vendor/
-/web/bundles/
+web/bundles/
+web/assets/
 .idea
 bower_components/
 node_modules/
