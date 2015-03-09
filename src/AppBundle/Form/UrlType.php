@@ -20,22 +20,8 @@ class UrlType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('hash')
-            ->add('description', 'textarea', array(
-                'attr' => array(
-                    'style' => 'width: 800px',
-                    'rows' => 5
-                )
-            ))
-            ->add('image')
-            ->add('image_rectangular')
-            ->add('note', 'textarea',array(
-                'attr' => array(
-                    'style' => 'width: 800px',
-                    'rows' => 5
-                )
-            ))
+            ->add('url')
+            ->add('save', 'submit', array('label' => 'Create url'))
         ;
     }
 

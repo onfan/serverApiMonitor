@@ -7,6 +7,7 @@
 
 namespace AppBundle\Manager;
 
+use AppBundle\Entity\Url;
 use Predis\Client;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -45,6 +46,28 @@ class UrlManager
         }
 
         $this->redis->sadd($url .':' . $status, $time);
+
+    }
+
+    /**
+     * @param $url
+     * @return bool
+     */
+    public function existsUrl($url)
+    {
+        return $this->redis->sismember(self::LIST_URLS, $url);
+    }
+
+    /**
+     * @param $url
+     * @return Url
+     */
+    public function getUrl($url)
+    {
+        $urlEntity = new Url();
+        $urlEntity->setUrl($url);
+
+        return $urlEntity;
 
     }
 }

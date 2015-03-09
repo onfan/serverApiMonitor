@@ -1,11 +1,22 @@
 module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		bowercopy: {
+
+
+
+        bowercopy: {
 			options: {
 				srcPrefix: 'bower_components',
 				destPrefix: 'web/assets'
 			 },
+            myCss: {
+                options: {
+                    srcPrefix: 'frontend'
+                },
+                files: {
+                    'css/sb-admin.css': 'css/sb-admin.css'
+                }
+            },
 			scripts: {
 				files: {
 					'js/jquery.js': 'jquery/dist/jquery.js',
@@ -15,7 +26,8 @@ module.exports = function (grunt) {
 			stylesheets: {
 				files: {
 					'css/bootstrap.css': 'bootstrap/dist/css/bootstrap.css',
-					'css/font-awesome.css': 'font-awesome/css/font-awesome.css'
+					'css/font-awesome.css': 'font-awesome/css/font-awesome.css',
+
 				}
 		 	},
 			fonts: {

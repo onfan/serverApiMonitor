@@ -11,23 +11,24 @@ namespace AppBundle\Entity;
 class Url {
 
     /** @var  String */
-    protected $name;
+    protected $url;
 
     /**
      * @return String
      */
-    public function getName()
+    public function getUrl()
     {
-        return $this->name;
+        return $this->url;
     }
 
     /**
-     * @param String $name
+     * @param String $url
      */
-    public function setName($name)
+    public function setUrl($url)
     {
-        $this->name = $name;
+        $this->url = $url;
     }
+
 
 
 }
