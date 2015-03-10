@@ -13,6 +13,13 @@ class Url {
     /** @var  String */
     protected $url;
 
+    /** @var  Integer */
+    protected $status;
+
+    public function __toString()
+    {
+        return $this->getUrl();
+    }
     /**
      * @return String
      */
@@ -28,6 +35,23 @@ class Url {
     {
         $this->url = $url;
     }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
 
 
 

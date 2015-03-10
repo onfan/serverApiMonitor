@@ -8,6 +8,7 @@
 namespace AppBundle\Manager;
 
 use AppBundle\Entity\Url;
+use Doctrine\Common\Collections\ArrayCollection;
 use Predis\Client;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -27,11 +28,19 @@ class UrlManager
     }
 
     /**
-     * @return array
+     * @return ArrayCollection
      */
     public function getAllUrls()
     {
-        return $this->redis->smembers(self::LIST_URLS);
+        $urls = $this->redis->smembers(self::LIST_URLS);
+        $collection = new ArrayCollection();
+        foreach ($urls as $url) {
+            $urlObject = new Url();
+            $urlObject->setUrl($url);
+            $collection->add($urlObject);
+        }
+
+        return $collection;
     }
 
     public function addUrl($url)
@@ -41,11 +50,30 @@ class UrlManager
 
     public function setVisited($url, $status, $time = null)
     {
-        if (null == $time){
+        if (null == $time) {
             $time = time();
         }
 
-        $this->redis->sadd($url .':' . $status, $time);
+        $this->redis->zadd($url, $time, $status);
+    }
+
+    public function getLastStatus($url)
+    {
+        $status = $this->redis->zrangebyscore(
+            $url,
+            0,
+            '+inf',
+            array(
+                'limit'      => array(0, 1),  // [0]: offset / [1]: count
+                'withscores' => false
+            )
+        );
+
+        if (isset($status[0])) {
+            return $status[0];
+        } else {
+            return null;
+        }
 
     }
 

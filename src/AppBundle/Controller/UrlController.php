@@ -15,12 +15,19 @@ class UrlController extends Controller
      */
     public function indexAction()
     {
-        $url = $this->get('monitor.manager.url');
-        $urls = $url->getAllUrls();
+        $urlManager = $this->get('monitor.manager.url');
+        $urls = $urlManager->getAllUrls();
 
-        return $this->render('AppBundle:Url:index.html.twig', array(
-            'urls' => $urls
-        ));
+        foreach ($urls as $url) {
+            $url->setStatus($urlManager->getLastStatus($url->getUrl()));
+        }
+
+        return $this->render(
+            'AppBundle:Url:index.html.twig',
+            array(
+                'urls' => $urls
+            )
+        );
     }
 
     /**
@@ -30,9 +37,12 @@ class UrlController extends Controller
     {
         $form = $this->createForm(new UrlType());
 
-        return $this->render('AppBundle:Url:new.html.twig', array(
-            'form' => $form->createView()
-        ));
+        return $this->render(
+            'AppBundle:Url:new.html.twig',
+            array(
+                'form' => $form->createView()
+            )
+        );
     }
 
     /**
@@ -51,14 +61,18 @@ class UrlController extends Controller
         $form = $this->createForm(new UrlType(), $urlEntity);
 
         $form->handleRequest($request);
-        if($form->isValid()) {
+        if ($form->isValid()) {
             $urlManager->addUrl($urlEntity->getUrl());
+
             return $this->redirect($this->generateUrl('url_list'));
         }
 
-        return $this->render('AppBundle:Url:edit.html.twig', array(
-            'form' =>  $form->createView()
-        ));
+        return $this->render(
+            'AppBundle:Url:edit.html.twig',
+            array(
+                'form' => $form->createView()
+            )
+        );
 
     }
 

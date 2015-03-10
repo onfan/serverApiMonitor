@@ -7,6 +7,7 @@
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\Url;
 use AppBundle\EventListener\ErrorEvent;
 use AppBundle\EventListener\EventsName;
 use AppBundle\EventListener\Not200Event;
@@ -45,7 +46,7 @@ class UrlCheckerCommand extends BaseCommand
         }
     }
 
-    protected function checkUrl($url, $output)
+    protected function checkUrl(Url $url, $output)
     {
 
         $client = new Client(
@@ -54,7 +55,7 @@ class UrlCheckerCommand extends BaseCommand
             )
         );
 
-        $request = $client->createRequest('GET', $url);
+        $request = $client->createRequest('GET', $url->getUrl());
         $log = $this->getContainer()->get('monolog.logger.command');
         /** @var \AppBundle\Manager\UrlManager $urlManager */
         $urlManager = $this->getContainer()->get('monitor.manager.url');

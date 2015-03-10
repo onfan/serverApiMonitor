@@ -1,15 +1,15 @@
 {% extends "::base.html.twig" %}
-{% set title = 'Urls' %}
+{% set title = 'New urls' %}
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 
 {% block body %}
-    <h1>New Url</h1>
 
     <div class="row">
-        <div class="col-lg-12">
-            <form role="form">
+        <div class="col-lg-6">
+            <form role="form" method="POST" action="{{ path('url_update') }}">
 
-                {{ form }}
+              {% include('AppBundle:Url:_form.html.twig') %}
+
 
             </form>
         </div>
