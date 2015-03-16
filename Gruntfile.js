@@ -26,7 +26,7 @@ module.exports = function (grunt) {
 			stylesheets: {
 				files: {
 					'css/bootstrap.css': 'bootstrap/dist/css/bootstrap.css',
-					'css/font-awesome.css': 'font-awesome/css/font-awesome.css',
+					'css/font-awesome.css': 'font-awesome/css/font-awesome.css'
 
 				}
 		 	},

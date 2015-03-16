@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Key;
 use AppBundle\Entity\Url;
 use AppBundle\Form\UrlType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -20,6 +21,7 @@ class UrlController extends Controller
 
         foreach ($urls as $url) {
             $url->setStatus($urlManager->getLastStatus($url->getUrl()));
+            $url->setKeyStatus($urlManager->hasKeysError($url));
         }
 
         return $this->render(
@@ -35,7 +37,8 @@ class UrlController extends Controller
      */
     public function newAction()
     {
-        $form = $this->createForm(new UrlType());
+        $url = new Url();
+        $form = $this->createForm(new UrlType(), $url);
 
         return $this->render(
             'AppBundle:Url:new.html.twig',
@@ -63,6 +66,7 @@ class UrlController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $urlManager->addUrl($urlEntity->getUrl());
+            $urlManager->setKeys($urlEntity);
 
             return $this->redirect($this->generateUrl('url_list'));
         }
@@ -71,6 +75,39 @@ class UrlController extends Controller
             'AppBundle:Url:edit.html.twig',
             array(
                 'form' => $form->createView()
+            )
+        );
+    }
+
+    /**
+     * @Route("/url/delete/{slug}", name="url_delete")
+     */
+    public function deleteAction($slug)
+    {
+        $urlManager = $this->get('monitor.manager.url');
+        $url = Url::createFromSlug($slug);
+        $urlManager->delete($url);
+
+        return $this->redirect($this->generateUrl('url_list'));
+    }
+
+    /**
+     * @Route("/url/edit/{slug}", name="url_edit")
+     * @param $slug
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editAction($slug)
+    {
+        $urlManager = $this->get('monitor.manager.url');
+        $url = Url::createFromSlug($slug);
+        $urlManager->populateKeysFor($url);
+        $form = $this->createForm(new UrlType(), $url);
+
+        return $this->render(
+            'AppBundle:Url:edit.html.twig',
+            array(
+                'form' => $form->createView(),
+                'url' => $url
             )
         );
 

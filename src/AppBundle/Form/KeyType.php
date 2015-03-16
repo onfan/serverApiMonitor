@@ -9,8 +9,9 @@ namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class UrlType extends AbstractType
+class KeyType extends AbstractType
 {
 
     /**
@@ -20,17 +21,17 @@ class UrlType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('url')
-            ->add('keys', 'collection', array(
-                'type' => new KeyType(),
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'by_reference' => false
-
-            ))
-            ->add('save', 'submit', array('label' => 'Create url'))
+            ->add('name')
         ;
     }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'AppBundle\Entity\Key',
+        ));
+    }
+
 
     /**
     /**
@@ -38,6 +39,6 @@ class UrlType extends AbstractType
      */
     public function getName()
     {
-        return 'url';
+        return 'key';
     }
 }

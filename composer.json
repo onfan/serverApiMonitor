@@ -24,7 +24,8 @@
     "guzzlehttp/guzzle": "~5.2",
     "snc/redis-bundle": "~1.1",
     "predis/predis": "0.8.x-dev",
-    "leezy/pheanstalk-bundle": "2.*"
+    "leezy/pheanstalk-bundle": "2.*",
+    "aferrandini/urlizer": "~1"
 
   },
   "require-dev": {

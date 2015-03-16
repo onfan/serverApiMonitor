@@ -8,7 +8,11 @@
 namespace AppBundle\Entity;
 
 
-class Url {
+use Doctrine\Common\Collections\ArrayCollection;
+use Ferrandini\Urlizer;
+
+class Url
+{
 
     /** @var  String */
     protected $url;
@@ -16,10 +20,22 @@ class Url {
     /** @var  Integer */
     protected $status;
 
+    /** @var  ArrayCollection */
+    protected $keys;
+
+    /** @var  Integer */
+    protected $keyStatus;
+    public function __construct()
+    {
+        $this->keys = new ArrayCollection();
+    }
+
+
     public function __toString()
     {
         return $this->getUrl();
     }
+
     /**
      * @return String
      */
@@ -52,7 +68,56 @@ class Url {
         $this->status = $status;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getKeys()
+    {
+        return $this->keys;
+    }
+
+    public function addKey(Key $key)
+    {
+        $this->keys->add($key);
+    }
+
+    public function removeKey(Key $key)
+    {
+        $this->keys->removeElement($key);
+    }
 
 
+    public function getKeysNameList()
+    {
+        return 'keys:' . $this->getUrl();
+    }
 
+    public function getSlug()
+    {
+        return str_replace('/', '__', $this->getUrl());
+    }
+
+    public static function createFromSlug($slug)
+    {
+        $url = new self;
+        $url->setUrl(str_replace('__', '/', $slug));
+
+        return $url;
+    }
+
+    /**
+     * @return int
+     */
+    public function getKeyStatus()
+    {
+        return $this->keyStatus;
+    }
+
+    /**
+     * @param int $keyStatus
+     */
+    public function setKeyStatus($keyStatus)
+    {
+        $this->keyStatus = $keyStatus;
+    }
 }

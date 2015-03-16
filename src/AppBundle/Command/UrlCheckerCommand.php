@@ -66,16 +66,19 @@ class UrlCheckerCommand extends BaseCommand
             $urlManager->setVisited($url, $code);
 
             if ($code >= 300) {
-               $this->throwEvent();
+                $this->throwEvent();
             }
 
             $json = $response->json();
             //check if has all the expected fields
-            $expectedKeys = array('id', 'name');
+            $expectedKeys = $url->getKeys();
             foreach ($expectedKeys as $key) {
-                if (!array_key_exists($key, $json)) {
+                if (!array_key_exists($key->__toString(), $json)) {
                     $message = sprintf("This key %s doesn't exist in response", $key);
                     $this->notifyError($message, $log, $output);
+                    $urlManager->setKeyStatus($url, $key, 'error');
+                } else {
+                    $urlManager->setKeyStatus($url, $key, 'ok');
                 }
             }
 
@@ -96,6 +99,7 @@ class UrlCheckerCommand extends BaseCommand
         $dispatcher = $this->getContainer()->get('event_dispatcher');
         $dispatcher->dispatch(EventsName::STATUS_NOT_200, $event);
     }
+
     protected function notifySuccess($message, $url, $log, $output)
     {
         $log->info($message);
