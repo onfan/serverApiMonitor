@@ -11,6 +11,7 @@
                 <tr>
                     <th>Url</th>
                     <th>Status</th>
+                    <th>Key status</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -19,7 +20,9 @@
                     <tr>
                         <td>{{ url.url}}</td>
                         <td>{{ url.status}}</td>
-                        <td><button class="btn">Delete</button> </td>
+                        <td>{{ url.keyStatus }}</td>
+                        <td><a href="{{ path('url_delete', {slug: url.slug}) }}" class="btn">Delete</a> </td>
+                        <td><a href="{{ path('url_edit', {slug: url.slug}) }}" class="btn">Edit</a> </td>
                     </tr>
                 {% endfor %}
 

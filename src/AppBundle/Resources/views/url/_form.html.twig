@@ -1,5 +1,12 @@
 {{ form_errors(form) }}
 {{ form_row(form.url) }}
+
+<ul class="keys " data-prototype="{{ form_widget(form.keys.vars.prototype)|e }}">
+    {# iterate over each existing tag and render its only field: name #}
+    {% for key in form.keys %}
+        <li>{{ form_row(key.name) }}</li>
+    {% endfor %}
+</ul>
 {{ form_row(form.save) }}
 <a href={{ path('url_list') }} class="btn">Cancel</a>
 {{ form_end(form) }}
