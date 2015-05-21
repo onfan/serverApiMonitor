@@ -31,7 +31,7 @@ class UrlCheckerCommand extends BaseCommand
     {
         $this
             ->setName('api:check')
-            ->setDescription("Check all venues in onfan that don't have foursquare_id and try to find id");
+            ->setDescription("o");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

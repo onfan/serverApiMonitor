@@ -100,6 +100,10 @@ class UrlManager
         $this->redis->hget($url->getKeysNameList(), $key);
     }
 
+    /**
+     * @param Url $url
+     * @return bool
+     */
     public function hasKeysError(Url $url)
     {
         $errors = [];

@@ -21,7 +21,7 @@ class UrlController extends Controller
 
         foreach ($urls as $url) {
             $url->setStatus($urlManager->getLastStatus($url->getUrl()));
-            $url->setKeyStatus($urlManager->hasKeysError($url));
+            $url->setKeyStatus($urlManager->hasKeysError($url) ? 'error' : 'ok');
         }
 
         return $this->render(
